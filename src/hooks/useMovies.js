@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
-const KEY = "139c695e";
+//const KEY = "139c695e";
 //const url = `http://www.omdbapi.com/?&apikey=${KEY}&s=${query}`;
 
-export function useMovies(query) {
+export function useMovies(query, KEY) {
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -55,7 +55,7 @@ export function useMovies(query) {
         controller.abort();
       };
     },
-    [query]
+    [query, KEY]
   );
 
   return { movies, isLoading, error };
