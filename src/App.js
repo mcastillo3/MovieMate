@@ -1,17 +1,17 @@
 import { useState } from "react";
-import { useMovies } from "../hooks/useMovies";
-import { useLocalStorage } from "../hooks/useLocalStorage";
-import Loader from "../components/Loader";
-import ErrorMessage from "../components/ErrorMessage";
-import NavBar from "../components/NavBar";
-import Search from "../components/Search";
-import Numresults from "../components/Numresults";
-import Main from "../components/Main";
-import Box from "../components/Box";
-import MovieList from "../components/MovieList";
-import MovieDetails from "../components/MovieDetails";
-import WatchedSummary from "../components/WatchedSummary";
-import WatchedMovieList from "../components/WatchedMovieList";
+import { useMovies } from "./hooks/useMovies";
+import { useLocalStorage } from "./hooks/useLocalStorage";
+import Loader from "./components/Loader";
+import ErrorMessage from "./components/ErrorMessage";
+import NavBar from "./components/NavBar";
+import Search from "./components/Search";
+import Numresults from "./components/Numresults";
+import Main from "./components/Main";
+import Box from "./components/Box";
+import MovieList from "./components/MovieList";
+import MovieDetails from "./components/MovieDetails";
+import WatchedSummary from "./components/WatchedSummary";
+import WatchedMovieList from "./components/WatchedMovieList";
 
 export const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
