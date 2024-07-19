@@ -19,7 +19,7 @@ export default function WatchedMovie({ movie, onDeleteWatched }) {
 
         <button
           className="btn-delete"
-          onClick={() => onDeleteWatched(movie.imdbID)}
+          onClick={() => onDeleteWatched(movie.id)}
         >
           X
         </button>

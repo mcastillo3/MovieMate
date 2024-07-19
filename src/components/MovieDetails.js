@@ -8,38 +8,24 @@ export default function MovieDetails({
   onCloseMovie,
   onAddWatched,
   watched,
-  KEY,
 }) {
   const [movie, setMovie] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [userRating, setUserRating] = useState("");
 
-  const isWatched = watched.map((movie) => movie.imdbID).includes(selectedId);
+  const isWatched = watched.map((movie) => movie.id).includes(selectedId);
   const watchedUserRating = watched.find(
-    (movie) => movie.imdbID === selectedId
+    (movie) => movie.id === selectedId
   )?.userRating;
-
-  const {
-    Title: title,
-    Year: year,
-    Poster: poster,
-    Runtime: runtime,
-    imdbRating,
-    Plot: plot,
-    Released: released,
-    Actors: actors,
-    Director: director,
-    Genre: genre,
-  } = movie;
 
   function handleAdd() {
     const newWatchedMovie = {
-      imdbID: selectedId,
-      title,
-      year,
-      poster,
-      imdbRating: Number(imdbRating),
-      runtime: Number(runtime.split(" ").at(0)),
+      id: movie.id,
+      title: movie.title,
+      year: movie.year,
+      poster: movie.poster,
+      imdbRating: Number(movie.imdb_rating),
+      runtime: Number(movie.run_time.split(" ").at(0)),
       userRating,
     };
 
@@ -49,32 +35,52 @@ export default function MovieDetails({
 
   useKey("Escape", onCloseMovie);
 
-  useEffect(
-    function () {
-      async function getMovieDetails() {
-        setIsLoading(true);
-        const res = await fetch(
-          `http://www.omdbapi.com/?&apikey=${KEY}&i=${selectedId}`
-        );
-        const data = await res.json();
-        setMovie(data);
-        setIsLoading(false);
-      }
-      getMovieDetails();
-    },
-    [selectedId, KEY]
-  );
+  // useEffect(() => {
+  //   fetch("http://localhost:8000/api/movies/")
+  //     .then((response) => response.json())
+  //     .then((data) => setMovie(data));
+  // }, []);
 
   useEffect(
     function () {
-      if (!title) return;
-      document.title = `Movie | ${title}`;
+      async function getMovieDetails() {
+        const res = await fetch(
+          `http://localhost:8000/api/movies/${selectedId}`
+        );
+        const data = await res.json();
+        setMovie(data);
+      }
+      getMovieDetails();
+    },
+    [selectedId]
+  );
+
+  // useEffect(
+  //   function () {
+  //     async function getMovieDetails() {
+  //       setIsLoading(true);
+  //       const res = await fetch(
+  //         `http://www.omdbapi.com/?&apikey=${KEY}&i=${selectedId}`
+  //       );
+  //       const data = await res.json();
+  //       setMovie(data);
+  //       setIsLoading(false);
+  //     }
+  //     getMovieDetails();
+  //   },
+  //   [selectedId, KEY]
+  // );
+
+  useEffect(
+    function () {
+      if (!movie.title) return;
+      document.title = `Movie | ${movie.title}`;
 
       return function () {
         document.title = "MovieMate";
       };
     },
-    [title]
+    [movie.title]
   );
 
   return (
@@ -87,16 +93,16 @@ export default function MovieDetails({
             <button className="btn-back" onClick={onCloseMovie}>
               &larr;
             </button>
-            <img src={poster} alt={`Poster of ${movie}`} />
+            <img src={movie.poster} alt={`Poster of ${movie.title}`} />
             <div className="details-overview">
-              <h2>{title}</h2>
+              <h2>{movie.title}</h2>
               <p>
-                {released} &bull; {runtime}
+                {movie.released} &bull; {movie.run_time}
               </p>
-              <p>{genre}</p>
+              <p>{movie.genre}</p>
               <p>
                 <span>⭐</span>
-                {imdbRating} IMDb rating
+                {movie.imdb_rating} IMDb rating
               </p>
             </div>
           </header>
@@ -124,10 +130,10 @@ export default function MovieDetails({
               )}
             </div>
             <p>
-              <em>{plot}</em>
+              <em>{movie.plot}</em>
             </p>
-            <p>Starring {actors}</p>
-            <p>Directed by {director}</p>
+            <p>Starring {movie.actors}</p>
+            <p>Directed by {movie.director}</p>
           </section>
         </>
       )}
