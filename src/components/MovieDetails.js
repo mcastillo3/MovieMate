@@ -45,7 +45,7 @@ export default function MovieDetails({
     function () {
       async function getMovieDetails() {
         const res = await fetch(
-          `http://localhost:8000/api/movies/${selectedId}`
+          `http://3.145.150.247:8000/api/movies/${selectedId}`
         );
         const data = await res.json();
         setMovie(data);

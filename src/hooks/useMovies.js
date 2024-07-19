@@ -18,7 +18,7 @@ export function useMovies(query, KEY) {
     function () {
       async function fetchMovies() {
         const res = await fetch(
-          `http://localhost:8000/api/movies/?title=${query}`
+          `http://3.145.150.247:8000/api/movies/?title=${query}`
         );
         const data = await res.json();
         setMovies(data);
