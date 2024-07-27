@@ -8,24 +8,38 @@ export default function MovieDetails({
   onCloseMovie,
   onAddWatched,
   watched,
+  KEY,
 }) {
   const [movie, setMovie] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [userRating, setUserRating] = useState("");
 
-  const isWatched = watched.map((movie) => movie.id).includes(selectedId);
+  const isWatched = watched.map((movie) => movie.imdbID).includes(selectedId);
   const watchedUserRating = watched.find(
-    (movie) => movie.id === selectedId
+    (movie) => movie.imdbID === selectedId
   )?.userRating;
+
+  const {
+    Title: title,
+    Year: year,
+    Poster: poster,
+    Runtime: runtime,
+    imdbRating,
+    Plot: plot,
+    Released: released,
+    Actors: actors,
+    Director: director,
+    Genre: genre,
+  } = movie;
 
   function handleAdd() {
     const newWatchedMovie = {
-      id: movie.id,
-      title: movie.title,
-      year: movie.year,
-      poster: movie.poster,
-      imdbRating: Number(movie.imdb_rating),
-      runtime: Number(movie.run_time.split(" ").at(0)),
+      imdbID: selectedId,
+      title,
+      year,
+      poster,
+      imdbRating: Number(imdbRating),
+      runtime: Number(runtime.split(" ").at(0)),
       userRating,
     };
 
@@ -35,52 +49,32 @@ export default function MovieDetails({
 
   useKey("Escape", onCloseMovie);
 
-  // useEffect(() => {
-  //   fetch("http://localhost:8000/api/movies/")
-  //     .then((response) => response.json())
-  //     .then((data) => setMovie(data));
-  // }, []);
-
   useEffect(
     function () {
       async function getMovieDetails() {
+        setIsLoading(true);
         const res = await fetch(
-          `http://3.145.150.247:8000/api/movies/${selectedId}`
+          `http://www.omdbapi.com/?&apikey=${KEY}&i=${selectedId}`
         );
         const data = await res.json();
         setMovie(data);
+        setIsLoading(false);
       }
       getMovieDetails();
     },
-    [selectedId]
+    [selectedId, KEY]
   );
-
-  // useEffect(
-  //   function () {
-  //     async function getMovieDetails() {
-  //       setIsLoading(true);
-  //       const res = await fetch(
-  //         `http://www.omdbapi.com/?&apikey=${KEY}&i=${selectedId}`
-  //       );
-  //       const data = await res.json();
-  //       setMovie(data);
-  //       setIsLoading(false);
-  //     }
-  //     getMovieDetails();
-  //   },
-  //   [selectedId, KEY]
-  // );
 
   useEffect(
     function () {
-      if (!movie.title) return;
-      document.title = `Movie | ${movie.title}`;
+      if (!title) return;
+      document.title = `Movie | ${title}`;
 
       return function () {
         document.title = "MovieMate";
       };
     },
-    [movie.title]
+    [title]
   );
 
   return (
@@ -93,16 +87,16 @@ export default function MovieDetails({
             <button className="btn-back" onClick={onCloseMovie}>
               &larr;
             </button>
-            <img src={movie.poster} alt={`Poster of ${movie.title}`} />
+            <img src={poster} alt={`Poster of ${title}`} />
             <div className="details-overview">
-              <h2>{movie.title}</h2>
+              <h2>{title}</h2>
               <p>
-                {movie.released} &bull; {movie.run_time}
+                {released} &bull; {runtime}
               </p>
-              <p>{movie.genre}</p>
+              <p>{genre}</p>
               <p>
                 <span>⭐</span>
-                {movie.imdb_rating} IMDb rating
+                {imdbRating} IMDb rating
               </p>
             </div>
           </header>
@@ -130,10 +124,10 @@ export default function MovieDetails({
               )}
             </div>
             <p>
-              <em>{movie.plot}</em>
+              <em>{plot}</em>
             </p>
-            <p>Starring {movie.actors}</p>
-            <p>Directed by {movie.director}</p>
+            <p>Starring {actors}</p>
+            <p>Directed by {director}</p>
           </section>
         </>
       )}
